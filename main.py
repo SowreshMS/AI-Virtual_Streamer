@@ -177,17 +177,17 @@ class Bot(commands.Bot):
         elif "Flappy" in content or "flappy" in content:
             output = 1
 
-        if output == 0 and self.game != "Dino":
-            print("switch to dino")
-            if self.game != "":
-                keyboard.press_and_release('esc')
-            keyboard.press_and_release('D')
-            self.game = "Dino"
-        elif output == 1 and self.game != "Flappy":
-            keyboard.press_and_release('esc')
-            keyboard.press_and_release('F')
-            print("switch to flappy bird")
-            self.game = "Flappy"
+        # if output == 0 and self.game != "Dino":
+        #     print("switch to dino")
+        #     if self.game != "":
+        #         keyboard.press_and_release('esc')
+        #     keyboard.press_and_release('D')
+        #     self.game = "Dino"
+        # elif output == 1 and self.game != "Flappy":
+        #     keyboard.press_and_release('esc')
+        #     keyboard.press_and_release('F')
+        #     print("switch to flappy bird")
+        #     self.game = "Flappy"
 
         # elif output == 2:
         #     print("switch to donkey kong")
@@ -215,23 +215,23 @@ class Bot(commands.Bot):
         
         print(emotion)
 
-        if emotion == "Neutral":
-            keyboard.press_and_release('ctrl+1')
+        # if emotion == "Neutral":
+        #     keyboard.press_and_release('ctrl+1')
             
-        elif emotion == "Fun":
-            keyboard.press_and_release('ctrl+2')
+        # elif emotion == "Fun":
+        #     keyboard.press_and_release('ctrl+2')
 
-        elif emotion == "Angry":
-            keyboard.press_and_release('ctrl+3')
+        # elif emotion == "Angry":
+        #     keyboard.press_and_release('ctrl+3')
 
-        elif emotion == "Joy":
-            keyboard.press_and_release('ctrl+4')
+        # elif emotion == "Joy":
+        #     keyboard.press_and_release('ctrl+4')
 
-        elif emotion == "Sorrow":
-            keyboard.press_and_release('ctrl+5')
+        # elif emotion == "Sorrow":
+        #     keyboard.press_and_release('ctrl+5')
 
-        elif emotion == "Surprise":
-            keyboard.press_and_release('ctrl+6')
+        # elif emotion == "Surprise":
+        #     keyboard.press_and_release('ctrl+6')
 
 
         if(Bot.conversation.count({ 'role': 'assistant', 'content': response }) == 0):

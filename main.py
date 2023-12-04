@@ -14,15 +14,15 @@ import keyboard
 from game_changer import *
 import pyaudio
 import wave
+from gtts import gTTS
+import pyautogui
+import asyncio
 
 CONVERSATION_LIMIT = 20
 
 speech = False
 
-model = Model() 
-
-# download the words corpus
-nltk.download('words')
+# model = Model() 
 
 class Bot(commands.Bot):
 
@@ -37,6 +37,8 @@ class Bot(commands.Bot):
         super().__init__(token= creds.TWITCH_TOKEN, prefix='!', initial_channels=[creds.TWITCH_CHANNEL])
 
         self.conv_count = 0
+        self.game = ""
+        self.status = ""
 
     async def event_ready(self):
         # Notify us when everything is ready!
@@ -86,17 +88,25 @@ class Bot(commands.Bot):
 
         time_thread = threading.Thread(target=play_audio, args=(audio_file,))
         time2_thread = threading.Thread(target=captions, args=(mark_array, response))
+        
 
         time2_thread.start()
         time_thread.start()
         
+        
         time_thread.join()
         time2_thread.join()
+    
 
         
         # initial listenining for keybind
         program_thread = threading.Thread(target=speech_mode, args=(os.path.dirname(__file__) + '/output22.mp3',))
         program_thread.start()
+    
+    async def read_file_async(self):
+        while True:
+            self.read_file()
+            await asyncio.sleep(1)  # Adjust the sleep duration as needed
 
     async def event_message(self, message):
         # Messages with echo set to True are messages sent by the bot...
@@ -106,7 +116,6 @@ class Bot(commands.Bot):
 
         if message.echo:
             return
-        print(speech)
         # If the AI is listening to speech input instead of reading twitch chat
         if speech:
             return
@@ -117,11 +126,26 @@ class Bot(commands.Bot):
         # We must let the bot know we want to handle and invoke our commands...
         await self.handle_commands(message)
 
+    async def read_file_async(self):
+        while True:
+            self.read_file()
+            await asyncio.sleep(1)  # Adjust the sleep duration as needed
+
+    def read_file(self):
+        file_path = r"C:\Users\Spher\OneDrive\Desktop\CS\AI\Kuebiko\AI-Virtual_Streamer\out.txt"
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as file:
+                status = file.read()
+            if self.status != status:
+                self.status = status
+                print("the status", self.status, "   ", status)
+                self.text_to_text(status)
+
     def text_to_text(self, message):
 
         # we are appending the personality txt file to the conversation array after every 5 back and forths so the model doesn't forget what it is
        
-        Bot.conversation.append({ 'role': 'system', 'content': open_file('prompt_chat.txt') })
+        # Bot.conversation.append({ 'role': 'system', 'content': open_file('prompt_chat.txt') })
 
         new_message = message
 
@@ -145,23 +169,42 @@ class Bot(commands.Bot):
         content = new_message.encode(encoding='ASCII',errors='ignore').decode()
 
         # using our game changer AI to see it should switch games
-        output = model(content)
+        # output = model(content)
+        output = 0
 
-        if output == 0:
+        if "Dino" in content or "dino" in content:
+            output = 0
+        elif "Flappy" in content or "flappy" in content:
+            output = 1
+
+        if output == 0 and self.game != "Dino":
             print("switch to dino")
-        elif output == 1:
+            if self.game != "":
+                keyboard.press_and_release('esc')
+            keyboard.press_and_release('D')
+            self.game = "Dino"
+        elif output == 1 and self.game != "Flappy":
+            keyboard.press_and_release('esc')
+            keyboard.press_and_release('F')
             print("switch to flappy bird")
-        elif output == 2:
-            print("switch to donkey kong")
-        elif output == 3:
-            print("switch to asteroids")
-        else:
-            print("keep talking(don't switch)")
+            self.game = "Flappy"
+
+        # elif output == 2:
+        #     print("switch to donkey kong")
+        # elif output == 3:
+        #     print("switch to asteroids")
+        # else:
+        #     print("keep talking(don't switch)")
 
         Bot.conversation.append({ 'role': 'user', 'content': content })
 
         response = gpt3_completion(Bot.conversation, tokens=100)
+
+        if "AI" in response:
+            response = "Sure"
+
         print('Someone:' , response)
+
         
         # expression changing AI
         sentiment = []
@@ -173,24 +216,22 @@ class Bot(commands.Bot):
         print(emotion)
 
         if emotion == "Neutral":
-            keyboard.press('ctrl+1')
+            keyboard.press_and_release('ctrl+1')
             
         elif emotion == "Fun":
-            keyboard.press('ctrl+2')
+            keyboard.press_and_release('ctrl+2')
 
         elif emotion == "Angry":
-            keyboard.press('ctrl+3')
+            keyboard.press_and_release('ctrl+3')
 
         elif emotion == "Joy":
-            keyboard.press('ctrl+4')
+            keyboard.press_and_release('ctrl+4')
 
         elif emotion == "Sorrow":
-            keyboard.press('ctrl+5')
+            keyboard.press_and_release('ctrl+5')
 
         elif emotion == "Surprise":
-            keyboard.press('ctrl+6')
-        
-        keyboard.release('ctrl')
+            keyboard.press_and_release('ctrl+6')
 
 
         if(Bot.conversation.count({ 'role': 'assistant', 'content': response }) == 0):
@@ -236,6 +277,9 @@ class Bot(commands.Bot):
             out.write(response.audio_content)
 
         audio_file = os.path.dirname(__file__) + '/output.mp3'
+
+        # tts = gTTS(text=response, lang='en')
+        # tts.save(audio_file)
 
 
         time_thread = threading.Thread(target=play_audio, args=(audio_file,))
@@ -284,6 +328,9 @@ def play_audio(audio_file):
         pygame.time.Clock().tick(10)
 
     pygame.mixer.quit()
+
+
+
 
 
 # waiting for a certain key input
@@ -433,7 +480,13 @@ def captions(mark_array, response):
 print("hi")
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = creds.GOOGLE_JSON_PATH
 bot = Bot()
-bot.run()
+loop = asyncio.get_event_loop()
+
+# Run the read_file_async method in the background
+loop.create_task(bot.read_file_async())
+
+# Run the bot
+loop.run_until_complete(bot.run())
 # bot.run() is blocking and will stop execution of any below code here until stopped or closed.
 
 

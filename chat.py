@@ -11,7 +11,7 @@ openai.api_key = creds.OPENAI_API_KEY
 openai.api_base = 'https://api.openai.com/v1/chat'
 
 
-def gpt3_completion(messages, engine='gpt-3.5-turbo', temp=0.9, tokens=400, freq_pen=2.0, pres_pen=2.0, stop=['DOGGIEBRO:', 'CHATTER:']):
+def gpt3_completion(messages, engine='gpt-3.5-turbo', temp=0.9, tokens=100, freq_pen=2.0, pres_pen=2.0, stop=['DOGGIEBRO:', 'CHATTER:']):
     response = openai.Completion.create(
         model=engine,
         messages=messages,

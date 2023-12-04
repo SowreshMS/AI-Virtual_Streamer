@@ -37,7 +37,7 @@ model = BiLSTM(input_size, hidden_size, num_layers, num_classes)
 class Model():
     def __init__(self):
         # initializing our pytorch model
-        self.model = torch.load(r"C:\Users\Spher\OneDrive\Desktop\CS\AI\Kuebiko\model.pth")
+        self.model = torch.load(r"C:\Users\Spher\OneDrive\Desktop\CS\AI\Kuebiko\AI-Virtual_Streamer\model.pth")
     
     def __call__(self, input):
         # converting each character in input to an integer and storing it in ty

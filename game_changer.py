@@ -48,8 +48,6 @@ class Model():
         output = self.model(torch.tensor(ty).unsqueeze(0).cuda())
 
         probs = nn.Softmax(dim=1)(output)
-
-        print(probs)
         
         return torch.argmax(probs, dim=1).item() if torch.max(probs, dim=1)[0].item() > 0.5 else 4
 

@@ -169,39 +169,34 @@ class Bot(commands.Bot):
         content = new_message.encode(encoding='ASCII',errors='ignore').decode()
 
         # using our game changer AI to see it should switch games
-        # output = model(content)
+        output = model(content)
         output = 0
 
-        if "Dino" in content or "dino" in content:
-            output = 0
-        elif "Flappy" in content or "flappy" in content:
-            output = 1
+        if output == 0:
+            print("switch to dino")
+            keyboard.press_and_release('esc')
+            keyboard.press_and_release('D')
+            self.game = "Dino"
+        elif output == 1:
+            keyboard.press_and_release('esc')
+            keyboard.press_and_release('F')
+            print("switch to flappy bird")
+            self.game = "Flappy"
 
-        # if output == 0 and self.game != "Dino":
-        #     print("switch to dino")
-        #     if self.game != "":
-        #         keyboard.press_and_release('esc')
-        #     keyboard.press_and_release('D')
-        #     self.game = "Dino"
-        # elif output == 1 and self.game != "Flappy":
-        #     keyboard.press_and_release('esc')
-        #     keyboard.press_and_release('F')
-        #     print("switch to flappy bird")
-        #     self.game = "Flappy"
-
-        # elif output == 2:
-        #     print("switch to donkey kong")
-        # elif output == 3:
-        #     print("switch to asteroids")
-        # else:
-        #     print("keep talking(don't switch)")
+        elif output == 2:
+            keyboard.press_and_release('esc')
+            keyboard.press_and_release('C')
+            print("switch to donkey kong")
+        elif output == 3:
+            keyboard.press_and_release('esc')
+            keyboard.press_and_release('L')
+            print("switch to asteroids")
+        else:
+            print("keep talking(don't switch)")
 
         Bot.conversation.append({ 'role': 'user', 'content': content })
 
         response = gpt3_completion(Bot.conversation, tokens=100)
-
-        if "AI" in response:
-            response = "Sure"
 
         print('Someone:' , response)
 
@@ -215,23 +210,23 @@ class Bot(commands.Bot):
         
         print(emotion)
 
-        # if emotion == "Neutral":
-        #     keyboard.press_and_release('ctrl+1')
+        if emotion == "Neutral":
+            keyboard.press_and_release('ctrl+1')
             
-        # elif emotion == "Fun":
-        #     keyboard.press_and_release('ctrl+2')
+        elif emotion == "Fun":
+            keyboard.press_and_release('ctrl+2')
 
-        # elif emotion == "Angry":
-        #     keyboard.press_and_release('ctrl+3')
+        elif emotion == "Angry":
+            keyboard.press_and_release('ctrl+3')
 
-        # elif emotion == "Joy":
-        #     keyboard.press_and_release('ctrl+4')
+        elif emotion == "Joy":
+            keyboard.press_and_release('ctrl+4')
 
-        # elif emotion == "Sorrow":
-        #     keyboard.press_and_release('ctrl+5')
+        elif emotion == "Sorrow":
+            keyboard.press_and_release('ctrl+5')
 
-        # elif emotion == "Surprise":
-        #     keyboard.press_and_release('ctrl+6')
+        elif emotion == "Surprise":
+            keyboard.press_and_release('ctrl+6')
 
 
         if(Bot.conversation.count({ 'role': 'assistant', 'content': response }) == 0):

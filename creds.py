@@ -1,8 +1,8 @@
 # You're Twitch Token 
-TWITCH_TOKEN = "8y2zdvk7vhs0kx36shnhuvq8uqkisn"
+TWITCH_TOKEN = "[Your twitch token]"
 # Your TWITCH Channel Name
-TWITCH_CHANNEL = "nanomiko"
+TWITCH_CHANNEL = "[Your twitch channel name]"
 # Your OpenAI API Key
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "[Your OpenAI API Key]"
 # Your Google Cloud JSON Path
-GOOGLE_JSON_PATH = r"C:\Users\Spher\OneDrive\Desktop\CS\AI\Kuebiko\AI-Virtual_Streamer\polynomial-land-400201-c0247bbd8ec8.json"
+GOOGLE_JSON_PATH = "[Your Google Cloud API Path]"
